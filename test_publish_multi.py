@@ -35,12 +35,14 @@ class VideoStream:
             self.af, self.socktype, self.proto, self.canonname, self.sa = res
             print(res)
             try:
+                print(f'{port}: creating socket ..')
                 self.s = socket.socket(self.af, self.socktype, self.proto)
             except socket.error as msg:
                 print(msg)
                 self.s = None
                 continue
             try:
+                print(f'{port}: binding socket to {self.sa}..')
                 self.s.bind(self.sa)
                 self.s.listen(1)
             except socket.error as msg:
@@ -52,6 +54,7 @@ class VideoStream:
         if self.s is None:
             print('Could not open socket')
             sys.exit(1)
+        print(f'{port}: self.s.accept()')
         self.conn, self.addr = self.s.accept()
         print('Connected by', self.addr)
         print(self.conn)
@@ -177,9 +180,7 @@ class Receiver:
     def on_receive(self, data):
         frame = self.cap.read()
         content = data.decode()
-        #length_content = len(content)
         json_list = []
-        #if length_content > 40:
         cams = content.split("&")
         for cam in cams:
             if "cam_id" in cam:
@@ -193,8 +194,6 @@ class Receiver:
                 dets = locs_to_dets(locs, idx)
                 frame_crop = self.frame_cropper.crop(frame, idx)
                 self.algo_dict[idx]['algo'].run(frame_crop, dets)
-                #cv2.imshow('a', frame)
-                #cv2.waitKey(1)
             except:
                 pass
 
