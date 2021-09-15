@@ -177,26 +177,26 @@ class Receiver:
     def on_receive(self, data):
         frame = self.cap.read()
         content = data.decode()
-        length_content = len(content)
+        #length_content = len(content)
         json_list = []
-        if length_content > 40:
-            cams = content.split("&")
-            for cam in cams:
-                if "cam_id" in cam:
-                    json_list.append(cam)
-            
-            for i, cam in enumerate(json_list): # splitting is incomplete, cam may not be dict
-                try:
-                    res = json.loads(cam)
-                    idx = int(res["cam_id"])
-                    locs = res['objs']
-                    dets = locs_to_dets(locs, idx)
-                    frame_crop = self.frame_cropper.crop(frame, idx)
-                    self.algo_dict[idx]['algo'].run(frame_crop, dets)
-                    #cv2.imshow('a', frame)
-                    #cv2.waitKey(1)
-                except:
-                    pass
+        #if length_content > 40:
+        cams = content.split("&")
+        for cam in cams:
+            if "cam_id" in cam:
+                json_list.append(cam)
+        
+        for i, cam in enumerate(json_list): # splitting is incomplete, cam may not be dict
+            try:
+                res = json.loads(cam)
+                idx = int(res["cam_id"])
+                locs = res['objs']
+                dets = locs_to_dets(locs, idx)
+                frame_crop = self.frame_cropper.crop(frame, idx)
+                self.algo_dict[idx]['algo'].run(frame_crop, dets)
+                #cv2.imshow('a', frame)
+                #cv2.waitKey(1)
+            except:
+                pass
 
 
 def create_algos(algo_dict):
