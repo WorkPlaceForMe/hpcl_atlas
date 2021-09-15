@@ -20,6 +20,13 @@ def main(port_number=5000):
     app = flask.Flask(__name__)
     app.config['DEBUG'] = True
 
+    @app.route('/restart', methods=['GET'])
+    def restart():
+        print('restarting flask2')
+        subprocess.run('pkill -f flask2.py -9', shell=True)
+        subprocess.Popen('python3 flask2.py', shell=True)
+        return ''
+
     @app.route('/', methods=['POST'])
     def start():
         user_data = flask.request.get_data()

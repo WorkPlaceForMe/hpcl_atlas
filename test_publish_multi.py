@@ -7,6 +7,7 @@ import numpy as np
 import math 
 import time
 #import cv2
+import requests
 
 from run_algo import Algos
 
@@ -37,6 +38,7 @@ class VideoStream:
             try:
                 print(f'{port}: creating socket ..')
                 self.s = socket.socket(self.af, self.socktype, self.proto)
+                self.s.settimeout(15)
             except socket.error as msg:
                 print(msg)
                 self.s = None
@@ -55,9 +57,20 @@ class VideoStream:
             print('Could not open socket')
             sys.exit(1)
         print(f'{port}: self.s.accept()')
-        self.conn, self.addr = self.s.accept()
+        try:
+            self.conn, self.addr = self.s.accept()
+        except socket.timeout:
+            print(f'{port} socket time out, restarting socket')
+            self.complete_restart()
+            #self.s.close()
+            #self.connect(host, port)
+
         print('Connected by', self.addr)
         print(self.conn)
+
+    def complete_restart(self):
+        requests.get('http://127.0.0.1:5000/restart')
+        sys.exit(1)
 
     def start(self):
         t = Thread(target=self.update, args=())
@@ -80,29 +93,30 @@ class VideoStream:
 
             if broken:
                 self.conn.close()
+                self.complete_restart()
                 break
             else:
                 self.cameraFeed = socketToNumpy(self.cameraFeed, sockData)
 
-    def update2(self):
-        while True:
-            sockData = b''
-            buffSize = self.cameraFeed.size
-            broken = False
-            while buffSize > 0:
-                nbytes = self.conn.recv(buffSize)
-                if not nbytes: 
-                    broken = True
-                    print(f'video stream from atlas stopped - {self.port}')
-                    break
-                sockData += nbytes
-                buffSize -= len(nbytes)
+    #def update2(self):
+    #    while True:
+    #        sockData = b''
+    #        buffSize = self.cameraFeed.size
+    #        broken = False
+    #        while buffSize > 0:
+    #            nbytes = self.conn.recv(buffSize)
+    #            if not nbytes: 
+    #                broken = True
+    #                print(f'video stream from atlas stopped - {self.port}')
+    #                break
+    #            sockData += nbytes
+    #            buffSize -= len(nbytes)
 
-            if broken:
-                self.conn.close()
-                break
-            else:
-                self.cameraFeed = socketToNumpy(self.cameraFeed, sockData)
+    #        if broken:
+    #            self.conn.close()
+    #            break
+    #        else:
+    #            self.cameraFeed = socketToNumpy(self.cameraFeed, sockData)
 
     def read(self):
         return self.cameraFeed.copy()
