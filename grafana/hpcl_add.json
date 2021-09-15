@@ -1,0 +1,224 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "$$hashKey": "object:39",
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 14,
+  "iteration": 1629710634152,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "content": "<meta charset=\"utf-8\">\n<form onsubmit=\"myFunction()\">\n  <input type=\"text\" name=\"name\" id=\"uniqueID\" size=\"70\" value=\"videos/out1.avi\" />\n  <br/> <br/>\n  <input type=\"submit\">\n</form>\n\n<script>\n    function myFunction(arg) {\n        var rtsp = document.getElementById(\"uniqueID\").value;\n        let message = rtsp.concat(',$analytics')\n\n        var xhr = new XMLHttpRequest();\n        //xhr.open(\"POST\", \"http://172.30.2.225:5000/\", true);\n        xhr.open(\"POST\", \"http://$host:5000/\", true);\n        xhr.send(message);\n        alert(message)\n    }\n</script>\n",
+        "mode": "html"
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  time AS \"time\",\n  trackId\nFROM test\nWHERE\n  $__timeFilter(time)\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "trackId"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "test",
+          "timeColumn": "time",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Enter camera rtsp",
+      "type": "text"
+    },
+    {
+      "datasource": "hpcl3",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "id": 8,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT cameras.rtsp, analytics.analytics from cameras inner join analytics where cameras.id = analytics.id;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "trackId"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "test",
+          "timeColumn": "time",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Camera List",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "object classification",
+          "value": "object classification"
+        },
+        "datasource": "hpcl2",
+        "definition": "select analytics from algo",
+        "description": null,
+        "error": {
+          "message": "Datasource named hpcl2 was not found"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "",
+        "multi": false,
+        "name": "analytics",
+        "options": [],
+        "query": "select analytics from algo",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "127.0.0.1",
+          "value": "127.0.0.1"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "label": null,
+        "name": "host",
+        "options": [
+          {
+            "selected": true,
+            "text": "127.0.0.1",
+            "value": "127.0.0.1"
+          }
+        ],
+        "query": "127.0.0.1",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "hpcl - add camera",
+  "uid": "S8SiOBmnk",
+  "version": 32
+}
