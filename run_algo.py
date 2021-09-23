@@ -9,6 +9,7 @@ from algo_use.motion import Motion
 from algo_use.aod import AOD
 from algo_use import milestone
 from mysql2 import Mysql
+from alarm_int import send_milestone
 
 LOITER_TIME = 30
 PARK_DURATION = 30
@@ -195,7 +196,9 @@ class Algos:
         self.mysql.insert_fast(table, values0)
 
         if MILESTONE:
-            ms.send_alarm(event_ip, client_ip, self.id, table)
+            #ms.send_alarm(event_ip, client_ip, self.id, table)
+            cam_ip = self.rtsp.split('@')[-1].split(':')[0]
+            send_milestone(table, cam_ip)
 
     def run(self, frame, dets):
         timer.update()
