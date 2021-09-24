@@ -3,11 +3,11 @@ import datetime
 
 timestamp = datetime.datetime.now()
 
-session = requests.Session()
+#session = requests.Session()
 
-session.auth = ('graymatics', 'Huawei12#$')
+#session.auth = ('graymatics', 'Huawei12#$')
 url="http://172.30.11.36:9090"
-auth = session.post(url)
+#auth = session.post(url)
 
 #headers = {'content-type': 'application/soap+xml'}
 def send_milestone(alert, cam_ip):
@@ -46,7 +46,8 @@ def send_milestone(alert, cam_ip):
     
     </AnalyticsEvent>""".format(timestamp.strftime("%Y-%m-%dT%H:%M:%S"), alert, cam_ip)
     
-    response = session.post(url,data=body,headers=headers)
+    #response = session.post(url,data=body,headers=headers)
+    requests.post(url, data=body, headers=headers)
 
 #print (response.status_code)
 #print (response.content)
