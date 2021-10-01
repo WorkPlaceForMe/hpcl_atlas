@@ -3,7 +3,10 @@ import cv2
 from mysql2 import Mysql
 
 IP = '127.0.0.1'
+IP2 = '172.30.2.225'
 HTTP_PORT = 8090
+HTTP_PORT2 = 8092
+RTSP_PORT = 8093
 PUB_PORT_FIRST = 9000
 CAMERA_TOTAL = 80
 
@@ -69,6 +72,8 @@ def add_id_and_ports(cams):
         #cams[rtsp]['pub_port'] = i + PUB_PORT_FIRST
         cams[rtsp]['stream_in'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT, i+CAMERA_TOTAL)
         cams[rtsp]['stream_out'] = ':{}/stream{}.mjpeg'.format(HTTP_PORT, i)
+        cams[rtsp]['stream_in2'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT2, i+CAMERA_TOTAL)
+        cams[rtsp]['stream_out2'] = 'rtsp://{}:{}/stream{}.sdp'.format(IP2, RTSP_PORT, i)
 
         #cams[rtsp]['stream_in'] = []
         #cams[rtsp]['stream_out'] = []
@@ -83,7 +88,7 @@ def add_to_camera_db(cams):
     mysql.add_table('cameras')
     mysql.add_table('analytics')
     for rtsp, v in cams.items():
-        res = v['id'], rtsp, v['setup_id'], v['atlas_stream_port'], v['atlas_json_port'], v['cam_id'], v['stream_in'], v['stream_out']
+        res = v['id'], rtsp, v['setup_id'], v['atlas_stream_port'], v['atlas_json_port'], v['cam_id'], v['stream_in'], v['stream_out'], v['stream_in2'], v['stream_out2']
         mysql.insert_fast('cameras', res)
     mysql.commit_insert('cameras')
 

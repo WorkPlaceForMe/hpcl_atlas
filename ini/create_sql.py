@@ -24,7 +24,7 @@ def create_cameras(table):
     cursor = db.cursor()
     cursor.execute('create database if not exists {}'.format(table.split('.')[0]))
     cursor.execute('drop table if exists {}'.format(table))
-    cmd = 'create table if not exists {} (id int(11), rtsp varchar(100), setup_id int(11), atlas_stream_port int(11), atlas_json_port int(11), cam_id int(11), stream_in varchar(100), stream_out varchar(100))'.format(table)
+    cmd = 'create table if not exists {} (id int(11), rtsp varchar(100), setup_id int(11), atlas_stream_port int(11), atlas_json_port int(11), cam_id int(11), stream_in varchar(100), stream_out varchar(100), stream_in2 varchar(100), stream_out2 varchar(100))'.format(table)
     execute(cursor, cmd)
     db.commit()
 

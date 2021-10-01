@@ -170,16 +170,23 @@ event_ip = 'http://127.0.0.1:9090'
 client_ip = 'http://127.0.0.1:8090'
 
 class Algos:
-    def __init__(self, id_, rtsp, algos, stream_in):
+    def __init__(self, id_, rtsp, algos, stream_in, stream_in2):
         self.id = id_
         self.rtsp = rtsp
         self.algos = algos
-        self.stream_in = stream_in
+        #self.stream_in = stream_in
         self.outxy = (640,480)
         self.process2 = (
             ffmpeg
             .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
             .output('{}'.format(stream_in))
+            .overwrite_output()
+            .global_args('-loglevel', 'error')
+            .run_async(pipe_stdin=True))
+        self.process3 = (
+            ffmpeg
+            .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
+            .output('{}'.format(stream_in2))
             .overwrite_output()
             .global_args('-loglevel', 'error')
             .run_async(pipe_stdin=True))
@@ -233,6 +240,7 @@ class Algos:
         draw(dets, self.algos, frame)
         frame = cv2.resize(frame, self.outxy)
         self.process2.stdin.write(frame)
+        self.process3.stdin.write(frame)
 
         if timer.time_pass('commit', 30):
             for table in self.mysql.values:

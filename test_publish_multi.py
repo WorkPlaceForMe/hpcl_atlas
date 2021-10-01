@@ -214,7 +214,7 @@ class Receiver:
 
 def create_algos(algo_dict):
     for cam_id, v in algo_dict.items():
-        v['algo'] = Algos(v['id'], v['rtsp'], v['algo_names'], v['stream_in'])
+        v['algo'] = Algos(v['id'], v['rtsp'], v['algo_names'], v['stream_in'], v['stream_in2'])
     return algo_dict
 
 def main(CAMERA_NUMBER, host, stream_port, json_port, algo_dict):

@@ -16,7 +16,7 @@ mysql_args = {
 mysql = Mysql(mysql_args)
 
 def get_stream_info():
-    cmd = 'select id, rtsp, atlas_stream_port, atlas_json_port, cam_id, stream_in from cameras'
+    cmd = 'select id, rtsp, atlas_stream_port, atlas_json_port, cam_id, stream_in, stream_in2 from cameras'
     urls = mysql.run_fetch(cmd)
     return([u for u in urls])
 
@@ -42,12 +42,13 @@ class Publisher:
             cameras_sub, cameras = cameras[:4], cameras[4:] # atlas process 4 streams at a time
             algo_dict = {}
             for camera in cameras_sub:
-                id_, rtsp, stream_port, json_port, cam_id, stream_in = camera
+                id_, rtsp, stream_port, json_port, cam_id, stream_in, stream_in2 = camera
                 algo_dict[cam_id] = {}
                 algo_dict[cam_id]['algo_names'] = get_algo_info(id_)
                 algo_dict[cam_id]['rtsp'] = rtsp
                 algo_dict[cam_id]['id'] = id_
                 algo_dict[cam_id]['stream_in'] = stream_in
+                algo_dict[cam_id]['stream_in2'] = stream_in2
             
             print(f'starting process {json_port} - {stream_port}')
             p = mp.Process(target=test_publish_multi.main, args=(len(cameras_sub), 'localhost', stream_port, json_port, algo_dict))

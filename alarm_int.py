@@ -1,7 +1,6 @@
 import requests
 import datetime
 
-timestamp = datetime.datetime.now()
 
 #session = requests.Session()
 
@@ -11,6 +10,7 @@ url="http://172.30.11.36:9090"
 
 #headers = {'content-type': 'application/soap+xml'}
 def send_milestone(alert, cam_ip):
+    timestamp = datetime.datetime.now()
     headers = {'content-type': 'text/xml'}
     body = """<?xml version="1.0" encoding="utf-8"?>
     <AnalyticsEvent xmlns:i="http://www.w3.org/2001/XMLSchema-instance" 
