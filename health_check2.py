@@ -1,16 +1,20 @@
 import os
 import cv2
 import time
+import sys
 
 from mysql2 import Mysql 
 
 mysql = Mysql({"ip":'127.0.0.1', "user":'graymatics', "pwd":'graymatics', "db":os.environ['MYSQL_DB'], "table":""})
 def get_stream_urls():
-    urls = mysql.run_fetch('select rtsp, stream_out from cameras')
+    urls = mysql.run_fetch('select rtsp, stream_out, stream_out2 from cameras')
     urls2 = []
-    for rtsp, out in urls:
+    for rtsp, out, out2 in urls:
         out = 'http://127.0.0.1' + out
-        urls2.append([rtsp, out])
+        if sys.argv[1] == '1':
+            urls2.append([rtsp, out, out2])
+        else:
+            urls2.append([rtsp, out])
     return urls2
 
 def isWorking(url):

@@ -10,13 +10,12 @@ yolo="${dir0}src/General_Yolov3_upgrade/bin/"
 
 MYSQL_DB=hpcl3
 
-cd $dock
-bash run-docker-ff.sh
-sleep 5
+#cd $dock
+#bash run-docker-ff.sh
+#sleep 5
 
 cd $src
 echo Huawei12#$ | sudo -S pkill -f "run_objectdemo.py"
-#echo sudo -S python3 -u run_objectdemo.py --src $src --yolo $yolo --db $MYSQL_DB &
 sudo python3 -u run_objectdemo.py --src $src --yolo $yolo --db $MYSQL_DB &
 sleep 5
     
@@ -24,7 +23,8 @@ sleep 5
 #bash run-docker.sh $src $MYSQL_DB
 
 while true;do
-    sleep 99999
+    sleep 9999
+    #ffserver -f vms-server.conf
 done
     
 

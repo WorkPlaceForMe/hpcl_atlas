@@ -79,17 +79,17 @@ def write_streams(streams):
         stream_info = stream[1:]
         for stream_i in range(stream_total):
             feed_i = stream_i + acc_stream_count
+            stream_i += acc_stream_count
             write_stream(stream_i, feed_i, stream_info)
         acc_stream_count += stream_total
 
 def write_conf():
-    http_port = 8092
+    http_port = 8090
     rtsp_port = 8093
     streams = []
-    #streams.append([80, 'sdp', 'rtp', 'libx264', 'yuv420p', '1280x720'])
-    #streams.append([20, 'mjpeg', 'mpjpeg', '', '', '640x480'])
-    streams.append([80, 'sdp', 'rtp', 'libx264', 'yuv420p', '640x480'])
-    #streams.append([1, 'mjpeg', 'rtp', '', '', '1280x720'])
+    #streams.append([80, 'sdp', 'rtp', 'libx264', 'yuv420p', '640x480'])
+    streams.append([80, 'sdp', 'rtp', '', '', '640x480'])
+    streams.append([80, 'mjpeg', 'mpjpeg', '', '', '640x480'])
     write_header(http_port, rtsp_port)
     write_feeds(streams)
     write_streams(streams)

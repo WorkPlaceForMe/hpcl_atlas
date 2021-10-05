@@ -5,7 +5,6 @@ from mysql2 import Mysql
 IP = '127.0.0.1'
 IP2 = '172.30.2.225'
 HTTP_PORT = 8090
-HTTP_PORT2 = 8092
 RTSP_PORT = 8093
 PUB_PORT_FIRST = 9000
 CAMERA_TOTAL = 80
@@ -71,8 +70,8 @@ def add_id_and_ports(cams):
         cams[rtsp]['cam_id'] = i % 4
         #cams[rtsp]['pub_port'] = i + PUB_PORT_FIRST
         cams[rtsp]['stream_in'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT, i+CAMERA_TOTAL)
-        cams[rtsp]['stream_out'] = ':{}/stream{}.mjpeg'.format(HTTP_PORT, i)
-        cams[rtsp]['stream_in2'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT2, i+CAMERA_TOTAL)
+        cams[rtsp]['stream_out'] = ':{}/stream{}.mjpeg'.format(HTTP_PORT, i+CAMERA_TOTAL)
+        cams[rtsp]['stream_in2'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT, i)
         cams[rtsp]['stream_out2'] = 'rtsp://{}:{}/stream{}.sdp'.format(IP2, RTSP_PORT, i)
 
         #cams[rtsp]['stream_in'] = []

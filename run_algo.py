@@ -2,6 +2,7 @@ import cv2
 import ffmpeg 
 import time
 from datetime import datetime
+import traceback
 
 from algo_use.tracking9 import Tracker
 from algo_use import algo
@@ -169,6 +170,30 @@ ms = milestone.Milestone('0.tcp.ap.ngrok.io:16480', 'graymatics', 'graymatics')
 event_ip = 'http://127.0.0.1:9090'
 client_ip = 'http://127.0.0.1:8090'
 
+class OutStream:
+    def __init__(self, outxy, output_path):
+        self.output_path = output_path
+        self.outxy = outxy
+        self._start()
+
+    def _start(self):
+        self.process = (
+            ffmpeg
+            .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
+            .output('{}'.format(self.output_path))
+            .overwrite_output()
+            .global_args('-loglevel', 'error')
+            .run_async(pipe_stdin=True))
+
+    def write(self, frame):
+        try:
+            frame = cv2.resize(frame, self.outxy)
+            self.process.stdin.write(frame)
+        except Exception:
+            print('restart out stream')
+            self.process.stdin.close()
+            self._start()
+
 class Algos:
     def __init__(self, id_, rtsp, algos, stream_in, stream_in2):
         self.id = id_
@@ -176,20 +201,22 @@ class Algos:
         self.algos = algos
         #self.stream_in = stream_in
         self.outxy = (640,480)
-        self.process2 = (
-            ffmpeg
-            .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
-            .output('{}'.format(stream_in))
-            .overwrite_output()
-            .global_args('-loglevel', 'error')
-            .run_async(pipe_stdin=True))
-        self.process3 = (
-            ffmpeg
-            .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
-            .output('{}'.format(stream_in2))
-            .overwrite_output()
-            .global_args('-loglevel', 'error')
-            .run_async(pipe_stdin=True))
+        self.process2 = OutStream(self.outxy, stream_in)
+        self.process3 = OutStream(self.outxy, stream_in2)
+        #self.process2 = (
+        #    ffmpeg
+        #    .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
+        #    .output('{}'.format(stream_in))
+        #    .overwrite_output()
+        #    .global_args('-loglevel', 'error')
+        #    .run_async(pipe_stdin=True))
+        #self.process3 = (
+        #    ffmpeg
+        #    .input('pipe:', format='rawvideo', pix_fmt='bgr24', s='{}x{}'.format(self.outxy[0], self.outxy[1]))
+        #    .output('{}'.format(stream_in2))
+        #    .overwrite_output()
+        #    .global_args('-loglevel', 'error')
+        #    .run_async(pipe_stdin=True))
         self.yoloTrackers = {}
         self.yoloTrackers['person'] = Tracker((1280,720))
         self.yoloTrackers['vehicle'] = Tracker((1280,720))
@@ -239,8 +266,8 @@ class Algos:
         # stream
         draw(dets, self.algos, frame)
         frame = cv2.resize(frame, self.outxy)
-        self.process2.stdin.write(frame)
-        self.process3.stdin.write(frame)
+        self.process2.write(frame)
+        self.process3.write(frame)
 
         if timer.time_pass('commit', 30):
             for table in self.mysql.values:
