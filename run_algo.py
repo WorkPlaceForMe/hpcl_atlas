@@ -1,6 +1,7 @@
 import cv2
 import ffmpeg 
 import time
+import datetime as dt
 from datetime import datetime
 import traceback
 
@@ -12,7 +13,7 @@ from algo_use import milestone
 from mysql2 import Mysql
 from alarm_int import send_milestone
 
-LOITER_TIME = 30
+LOITER_TIME = 600
 PARK_DURATION = 30
 MYSQL_TABLES = ['aod', 'crowd', 'intrude_loiter', 'motion', 'obj_type', 'speed_park']
 MILESTONE = True
@@ -88,7 +89,18 @@ class Timer:
         else:
             return False
 
+    def is_inRange(self, h0, h1):
+        now = self.now.hour * 60 + self.now.minute
+        time0 = h0 * 60
+        time1 = h1 * 60
+        if time1 > time0:
+            return now > time0 and now < time1
+        else:
+            return now > time0 or now < time1
+
 def loiter(timer, tracks, send_alert):
+    if not timer.is_inRange(13.5, 1.5): # docker is UTC time, need IST 19 - 7
+        return
     for i, track in enumerate(tracks):
         if track.miss > 0:
             continue
@@ -99,11 +111,11 @@ def loiter(timer, tracks, send_alert):
             track.dict['loiter'] = 0
         track.dict['loiter'] += timer.dt
 
-        # intrude
-        track.attr['text'].append('intrude')
-        if 'alert_intrude' not in track.tag:
-            track.tag.add('alert_intrude')
-            send_alert('intrude_loiter', ['intrude', 0])
+        ## intrude
+        #track.attr['text'].append('intrude')
+        #if 'alert_intrude' not in track.tag:
+        #    track.tag.add('alert_intrude')
+        #    send_alert('intrude_loiter', ['intrude', 0])
 
         # loiter
         if track.dict['loiter'] > LOITER_TIME:
@@ -249,7 +261,8 @@ class Algos:
 
         if 'crowd detection' in self.algos:
             if timer.time_pass('crowd', 30):
-                self.send_alert('crowd', [len(dets['person'])])
+                if len(dets['person']) >= 30:
+                    self.send_alert('crowd', [len(dets['person'])])
 
         if 'intrusion and loitering' in self.algos:
             loiter(timer, tracks['person'], self.send_alert)
