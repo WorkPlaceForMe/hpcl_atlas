@@ -72,7 +72,7 @@ def add_id_and_ports(cams):
         cams[rtsp]['stream_in'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT, i+CAMERA_TOTAL)
         cams[rtsp]['stream_out'] = ':{}/stream{}.mjpeg'.format(HTTP_PORT, i+CAMERA_TOTAL)
         cams[rtsp]['stream_in2'] = 'http://{}:{}/feed{}.ffm'.format(IP, HTTP_PORT, i)
-        cams[rtsp]['stream_out2'] = 'rtsp://{}:{}/stream{}.sdp'.format(IP2, RTSP_PORT, i)
+        cams[rtsp]['stream_out2'] = 'rtsp://{}:{}/stream{}.mjpeg'.format(IP2, RTSP_PORT, i)
 
         #cams[rtsp]['stream_in'] = []
         #cams[rtsp]['stream_out'] = []

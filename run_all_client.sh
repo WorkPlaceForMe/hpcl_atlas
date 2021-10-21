@@ -5,7 +5,8 @@ src="${dir0}src/final4/"
 #dir0="/home/graymatics/dev/atlas/"
 #src="${dir0}final4/"
 
-dock="${dir0}docker/"
+#dock="${dir0}docker/"
+dock="${dir0}src/final4/docker/"
 yolo="${dir0}src/General_Yolov3_upgrade/bin/"
 
 MYSQL_DB=hpcl3

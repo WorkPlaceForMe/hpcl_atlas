@@ -88,8 +88,8 @@ def write_conf():
     rtsp_port = 8093
     streams = []
     #streams.append([80, 'sdp', 'rtp', 'libx264', 'yuv420p', '640x480'])
-    streams.append([80, 'sdp', 'rtp', '', '', '640x480'])
-    streams.append([80, 'mjpeg', 'mpjpeg', '', '', '640x480'])
+    #streams.append([80, 'mjpeg', 'rtp', '', '', '640x480'])
+    streams.append([30, 'mjpeg', 'mpjpeg', '', '', '640x480'])
     write_header(http_port, rtsp_port)
     write_feeds(streams)
     write_streams(streams)
