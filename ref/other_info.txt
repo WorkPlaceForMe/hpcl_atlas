@@ -1,0 +1,3 @@
+use final4/health_check2.py to check if input/ output streams are working, useful when there are many cameras
+
+

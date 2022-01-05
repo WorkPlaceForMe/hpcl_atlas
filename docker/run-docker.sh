@@ -1,8 +1,8 @@
 docker stop hpcl
 docker rm hpcl
 
-docker run -ti \
-    --network host --restart always \
+docker run -d \
+    --network host \
     -e MYSQL_DB=$2 \
     -v /home/hpcl-videoanalytics/atlas2/src/final4:/home/src/final \
     --name hpcl \

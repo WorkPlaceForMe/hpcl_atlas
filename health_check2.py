@@ -11,10 +11,12 @@ def get_stream_urls():
     urls2 = []
     for rtsp, out, out2 in urls:
         out = 'http://127.0.0.1' + out
-        if sys.argv[1] == '1':
-            urls2.append([rtsp, out, out2])
-        else:
+        if sys.argv[1] == '0':
+            urls2.append([rtsp])
+        elif sys.argv[1] == '1':
             urls2.append([rtsp, out])
+        else:
+            urls2.append([rtsp, out, out2])
     return urls2
 
 def isWorking(url):

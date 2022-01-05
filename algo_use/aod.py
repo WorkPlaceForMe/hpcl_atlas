@@ -6,11 +6,11 @@ from algo_use.tracking9 import Tracker
 class AOD:
     def __init__(self, mask):
         self.bgSubtractor = cv2.createBackgroundSubtractorMOG2()
-        self.bgSubtractor.setNMixtures(2) # increase to reduce detection
+        self.bgSubtractor.setNMixtures(5) # increase to reduce detection
         self.bgSubtractor.setDetectShadows(True)
-        self.bgSubtractor.setVarThreshold(200) # increase to reduce detection
+        self.bgSubtractor.setVarThreshold(5000) # increase to reduce detection
 
-        self.minAODSize = 100
+        self.minAODSize = 1000
         self.minAODduration = 300
         self.mask = mask
 
